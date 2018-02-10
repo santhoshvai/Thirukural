@@ -1,0 +1,31 @@
+name: thirukural
+description: Shows all kurals in Thirukural with their meanings. Supports both English and Tamil.
+
+dependencies:
+  flutter:
+    sdk: flutter
+  path_provider: "^0.2.1+1"
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+# The following section is specific to Flutter.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the Icons class.
+  uses-material-design: true
+
+  assets:
+    - assets/kuralList.json
+
+  # The default fonts are very bad for tamil, so used a google open source font
+  # All possible fonts are listed at http://niram.org/tamil-webfont/
+  fonts:
+    - family: NotoSansTamil
+      fonts:
+        - asset: assets/fonts/NotoSansTamil-Regular.ttf
+        - asset: assets/fonts/NotoSansTamil-Bold.ttf
+          weight: 700
