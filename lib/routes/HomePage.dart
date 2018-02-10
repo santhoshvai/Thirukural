@@ -3,7 +3,6 @@ import '../BottomBarScreens/KuralExpansion.dart';
 import '../BottomBarScreens/FavoriteKurals.dart';
 import '../kurals.dart';
 import '../constants.dart';
-import 'kuralDetail.dart';
 import 'Sample.dart';
 
 class HomePage extends StatefulWidget {
