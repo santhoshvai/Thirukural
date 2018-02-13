@@ -5,15 +5,48 @@ import '../kurals.dart';
 import '../constants.dart';
 import 'Sample.dart';
 
+class BotBarBodyView {
+  final Widget body;
+  final AnimationController controller;
+  CurvedAnimation _animation;
+
+  BotBarBodyView({Widget body, TickerProvider vsync}):
+        assert(body != null),
+        assert(vsync != null),
+        body = body,
+        controller = new AnimationController(
+          duration: const Duration(milliseconds: 500),
+          vsync: vsync,
+        ) {
+    _animation = new CurvedAnimation(
+      parent: controller,
+      curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
+    );
+  }
+
+  FadeTransition transition(BuildContext context) {
+    return new FadeTransition(
+      opacity: _animation,
+      child: new SlideTransition(
+        position: new Tween<Offset>(
+          begin: const Offset(0.0, 0.02), // Slightly down.
+          end: Offset.zero,
+        ).animate(_animation),
+        child: body,
+      ),
+    );
+  }
+}
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => new _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _screen = 0;
-  Kurals _kurals = new Kurals();
   bool _fetching = true;
+  List<BotBarBodyView> _botBarBodyViews =  <BotBarBodyView>[];
 
   _getKurals() async {
     String kuralJson = await DefaultAssetBundle
@@ -21,14 +54,49 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         .loadString('assets/kuralList.json');
     final kurals = new Kurals.fromJson(kuralJson);
 
+    final list = <BotBarBodyView>[
+      new BotBarBodyView(
+        body: new KuralExpansion(kurals),
+        vsync: this,
+      ),
+      new BotBarBodyView(
+        body: new FavoriteKurals(kurals),
+        vsync: this,
+      ),
+      // TODO settings view
+      new BotBarBodyView(
+        body: new AnimatedListSample(),
+        vsync: this,
+      )
+    ];
+
+    // initialise the animation controllers
+    for (BotBarBodyView view in _botBarBodyViews) {
+      view.controller.addListener(_rebuild);
+    }
+    list[_screen].controller.value = 1.0;
+
     // If the widget was removed from the tree while the message was in flight,
     // we want to discard the reply rather than calling setState to update our
     // non-existent appearance.
     if (!mounted) return;
 
     setState(() {
-      _kurals = kurals;
       _fetching = false;
+      _botBarBodyViews = list;
+    });
+  }
+
+  @override
+  void dispose() {
+    for (BotBarBodyView view in _botBarBodyViews)
+      view.controller.dispose();
+    super.dispose();
+  }
+
+  void _rebuild() {
+    setState(() {
+      // Rebuild in order to animate views.
     });
   }
 
@@ -36,18 +104,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
     _getKurals();
-  }
-
-  _onPress() {
-    int index = 17;
-    Kural kural = _kurals.kurals[17];
-    Athigaram athigaram = _kurals.athigaarams[kural.athigaramIndex];
-    String paal = _kurals.paals[athigaram.paalIndex];
-    Navigator.of(context).push(new MaterialPageRoute<Null>(
-          builder: (BuildContext context) =>
-            new AnimatedListSample(),
-//              new KuralDetail(kural, athigaram.name, paal, index),
-        ));
   }
 
   _onBottomBarTap(int index) {
@@ -64,42 +120,34 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
-  Widget _getBody() {
+  Widget _buildTransitionWidget() {
     if (_fetching) {
       return _getCentreProgress();
     }
-    if (_screen == 0) {
-      return new KuralExpansion(_kurals);
-    } else if(_screen == 1) {
-      return new FavoriteKurals(_kurals);
-    } else {
-      return new AnimatedListSample();
-      return new FlatButton(
-        onPressed: _onPress,
-        child: new Text("Change"),
-      );
-    }
+    _botBarBodyViews[_screen].controller.reset();
+    _botBarBodyViews[_screen].controller.forward();
+    return _botBarBodyViews[_screen].transition(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    final botNavBar = new BottomNavigationBar(
+      items: kBottombarMenu
+          .map((e) => new BottomNavigationBarItem(icon: new Icon(e[0]), title: new Text(e[1])))
+          .toList(),
+      currentIndex: _screen,
+      onTap: _onBottomBarTap,
+    );
+
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(
           kHomepageTitle,
         ),
       ),
-      body: _getBody(),
-      bottomNavigationBar: new BottomNavigationBar(
-        items: kBottombarMenu
-            .map((e) => new BottomNavigationBarItem(
-                  icon: new Icon(e[0]),
-                  title: new Text(e[1]),
-                ))
-            .toList(),
-        currentIndex: _screen,
-        onTap: _onBottomBarTap,
-      ),
+      body: _buildTransitionWidget(),
+//      body: _getBody(),
+      bottomNavigationBar: botNavBar
     );
   }
 }
