@@ -94,7 +94,7 @@ class _KuralDetailState extends State<KuralDetail> {
         textAlign: TextAlign.left,
         style: new TextStyle(
           color: Colors.black87,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w400,
           fontSize: 13.0,
           height: 1.5,
         ),
@@ -111,7 +111,7 @@ class _KuralDetailState extends State<KuralDetail> {
         child: new Text(
           "$athigaram, $paal",
           style: new TextStyle(
-            color: Colors.black54,
+            color: Colors.black87,
           ),
         ),
       ),
@@ -135,7 +135,9 @@ class _KuralDetailState extends State<KuralDetail> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              new Text(data),
+              new Text(
+                data,
+              ),
             ],
           ),
         ),
