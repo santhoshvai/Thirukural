@@ -3,7 +3,7 @@ import '../constants.dart';
 import '../kurals.dart';
 import '../utils.dart';
 
-typedef void FavEditCallback(int index);
+typedef void FavEditCallback(Kural kural);
 
 class FavoriteKurals extends StatefulWidget {
   final Kurals _kurals;
@@ -17,19 +17,19 @@ class FavoriteKurals extends StatefulWidget {
 class _FavoriteKuralsState extends State<FavoriteKurals> {
   final Kurals _kurals;
   bool _fetching = true;
-  List<Kural> _favKurals = [];
   List<int> _allFavsIndices = [];
-  ListModel<int> _list;
+  KuralWithIndex _deletedKural;
+  ListModel<KuralWithIndex> _list;
   final GlobalKey<AnimatedListState> _listKey = new GlobalKey<AnimatedListState>();
 
   _FavoriteKuralsState(this._kurals);
 
   _getFavorites() async {
-    List<int> allFavsIndices = (await readFavorites()).toList();
-    allFavsIndices.sort();
-    List<Kural> favKurals = [];
-    for (int index in allFavsIndices) {
-      favKurals.add(_kurals.kurals[index]);
+    _allFavsIndices = (await readFavorites()).toList();
+    _allFavsIndices.sort();
+    List<KuralWithIndex> favKurals = [];
+    for (int index in _allFavsIndices) {
+      favKurals.add(new KuralWithIndex(_kurals.kurals[index], index));
     }
 
     // If the widget was removed from the tree while the message was in flight,
@@ -39,15 +39,16 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
 
     setState(() {
       _fetching = false;
-      _favKurals = favKurals;
-      _allFavsIndices = allFavsIndices;
+      _list = new ListModel<KuralWithIndex>(
+        listKey: _listKey,
+        initialItems: favKurals,
+        removedItemBuilder: _buildRemovedItem,
+      );
     });
   }
 
-  _removeFromFavs(int index) async {
-    setState(() {
-      _allFavsIndices.remove(index);
-    });
+  _removeFromFavs() async {
+    _allFavsIndices.remove(_deletedKural.kuralIndex);
     writeFavoriteList(_allFavsIndices.toSet());
   }
 
@@ -55,6 +56,7 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
   void initState() {
     super.initState();
     _getFavorites();
+    _deletedKural = null;
   }
 
   Widget _getCentreProgress() {
@@ -69,10 +71,25 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
   Widget _buildItem(BuildContext context, int index, Animation<double> animation) {
     return new CardItem(
       animation: animation,
-      index: index,
-      kural: _favKurals[index],
-      kuralIndex: _allFavsIndices[index],
-      onFavEdit: _removeFromFavs,
+      kuralWithIndex: _list[index],
+      onFavRemove: () {
+        _deletedKural = _list[index];
+        _list.removeAt(_list.indexOf(_deletedKural));
+        _removeFromFavs();
+      }
+    );
+  }
+
+  // Used to build an item after it has been removed from the list. This method is
+  // needed because a removed item remains visible until its animation has
+  // completed (even though it's gone as far this ListModel is concerned).
+  // The widget will be used by the [AnimatedListState.removeItem] method's
+  // [AnimatedListRemovedItemBuilder] parameter.
+  Widget _buildRemovedItem(KuralWithIndex kural, BuildContext context, Animation<double> animation) {
+    return new CardItem(
+      animation: animation,
+      kuralWithIndex: kural,
+      onFavRemove: null,
     );
   }
 
@@ -80,15 +97,9 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
     if (_fetching) {
       return _getCentreProgress();
     }
-//    return new ListView.builder(
-//      itemCount: _allFavsIndices.length,
-//      itemBuilder: (BuildContext context, int index) {
-//        return _getListTile(index, _allFavsIndices[index], _favKurals[index], _removeFromFavs);
-//      },
-//    );
     return new AnimatedList(
       key: _listKey,
-      initialItemCount: _allFavsIndices.length,
+      initialItemCount: _list.length,
       itemBuilder: _buildItem,
     );
   }
@@ -143,7 +154,7 @@ class ListModel<E> {
   int indexOf(E item) => _items.indexOf(item);
 }
 
-Widget _getListTile(int index, int kuralIndex, Kural kural, FavEditCallback onFavEdit) {
+Widget _getListTile(Kural kural, VoidCallback onRemove) {
   return new Card(
     child: new Column(
       children: <Widget>[
@@ -151,8 +162,8 @@ Widget _getListTile(int index, int kuralIndex, Kural kural, FavEditCallback onFa
           title: new Text(
             kural.tamil,
           ),
-          isThreeLine: true,
-          subtitle: new Text("$kKural ${kuralIndex+1}"),
+//          isThreeLine: true,
+//          subtitle: new Text("$kKural ${kuralIndex+1}"),
         ),
         new ButtonTheme.bar(
           // make buttons use the appropriate styles for cards
@@ -160,7 +171,7 @@ Widget _getListTile(int index, int kuralIndex, Kural kural, FavEditCallback onFa
             children: <Widget>[
               new FlatButton(
                 child: const Text('REMOVE'),
-                onPressed: () => onFavEdit(kuralIndex),
+                onPressed: onRemove,
               ),
             ],
           ),
@@ -174,26 +185,31 @@ class CardItem extends StatelessWidget {
   const CardItem({
     Key key,
     this.animation,
-    this.onFavEdit,
-    this.kural,
-    this.index,
-    this.kuralIndex,
+    this.onFavRemove,
+    this.kuralWithIndex,
   }) : assert(animation != null),
-        assert(index != null && index >= 0),
-        assert(kuralIndex != null && kuralIndex >= 0),
+        assert(kuralWithIndex != null),
         super(key: key);
 
   final Animation<double> animation;
-  final FavEditCallback onFavEdit;
-  final int index;
-  final int kuralIndex;
-  final Kural kural;
+  final VoidCallback onFavRemove;
+  final KuralWithIndex kuralWithIndex;
 
   @override
   Widget build(BuildContext context) {
     return new FadeTransition(
       opacity: animation,
-      child: _getListTile(index, kuralIndex, kural, onFavEdit),
+      child: new SizeTransition(
+        axis: Axis.vertical,
+        sizeFactor: animation,
+        child: _getListTile(kuralWithIndex.kural, onFavRemove),
+      )
     );
   }
+}
+
+class KuralWithIndex {
+  final Kural kural;
+  final int kuralIndex;
+  KuralWithIndex(this.kural, this.kuralIndex);
 }

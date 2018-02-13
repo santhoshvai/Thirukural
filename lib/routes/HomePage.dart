@@ -73,6 +73,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     } else if(_screen == 1) {
       return new FavoriteKurals(_kurals);
     } else {
+      return new AnimatedListSample();
       return new FlatButton(
         onPressed: _onPress,
         child: new Text("Change"),
