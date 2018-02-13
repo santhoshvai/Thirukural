@@ -146,7 +146,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       ),
       body: _buildTransitionWidget(),
-//      body: _getBody(),
       bottomNavigationBar: botNavBar
     );
   }
