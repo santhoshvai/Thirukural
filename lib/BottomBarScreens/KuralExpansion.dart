@@ -56,7 +56,7 @@ class KuralExpansionItem extends StatelessWidget {
   Widget _buildAthigaaramExpansionTiles(
       BuildContext context, Athigaram athigaram) {
     return new ExpansionTile(
-//      key: new PageStorageKey<String>(athigaram.name),
+      key: new PageStorageKey<String>(athigaram.name),
       title: new Text(
         athigaram.name,
         style: new TextStyle(
@@ -78,7 +78,7 @@ class KuralExpansionItem extends StatelessWidget {
 
   Widget _buildPaalExpansionTiles(BuildContext context) {
     return new ExpansionTile(
-//      key: new PageStorageKey<String>(_kurals.paals[_paalIndex]),
+      key: new PageStorageKey<String>(_kurals.paals[_paalIndex]),
       title: new Text(_kurals.paals[_paalIndex]),
       children: _kurals.athigaarams
           .where((athigaaram) => athigaaram.paalIndex == _paalIndex)
