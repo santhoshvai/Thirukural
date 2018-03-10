@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import '../routes/KuralDetail.dart';
 import '../constants.dart';
 import '../kurals.dart';
 import '../utils.dart';
-
-typedef void FavEditCallback(Kural kural);
 
 class FavoriteKurals extends StatefulWidget {
   final Kurals _kurals;
@@ -20,11 +19,15 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
   List<int> _allFavsIndices = [];
   KuralWithIndex _deletedKural;
   ListModel<KuralWithIndex> _list;
-  final GlobalKey<AnimatedListState> _listKey = new GlobalKey<AnimatedListState>();
+  final GlobalKey<AnimatedListState> _listKey =
+      new GlobalKey<AnimatedListState>();
 
   _FavoriteKuralsState(this._kurals);
 
   _getFavorites() async {
+    setState(() {
+      _fetching = true;
+    });
     _allFavsIndices = (await readFavorites()).toList();
     _allFavsIndices.sort();
     List<KuralWithIndex> favKurals = [];
@@ -68,15 +71,33 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
   }
 
   // Used to build list items that haven't been removed.
-  Widget _buildItem(BuildContext context, int index, Animation<double> animation) {
+  Widget _buildItem(
+      BuildContext context, int index, Animation<double> animation) {
+    final kuralWithIndex = _list[index];
+    final kural = kuralWithIndex.kural;
     return new CardItem(
-      animation: animation,
-      kuralWithIndex: _list[index],
-      onFavRemove: () {
-        _deletedKural = _list[index];
-        _list.removeAt(_list.indexOf(_deletedKural));
-        _removeFromFavs();
-      }
+        animation: animation,
+        kuralWithIndex: kuralWithIndex,
+        onFavTap: () async {
+          // move to detail page
+          Athigaram athigaram = _kurals.athigaarams[kural.athigaramIndex];
+          String paal = _kurals.paals[athigaram.paalIndex];
+          await Navigator.of(context).push(new MaterialPageRoute<Null>(
+            builder: (BuildContext context) => new KuralDetail(
+              kural,
+              athigaram.name,
+              paal,
+              _kurals.kurals.indexOf(kural, kural.athigaramIndex),
+            ),
+          ));
+          // the detail page may change the favorite state, so recheck the favorite list
+          _getFavorites();
+        },
+        onFavRemove: () {
+          _deletedKural = _list[index];
+          _list.removeAt(_list.indexOf(_deletedKural));
+          _removeFromFavs();
+        }
     );
   }
 
@@ -85,7 +106,8 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
   // completed (even though it's gone as far this ListModel is concerned).
   // The widget will be used by the [AnimatedListState.removeItem] method's
   // [AnimatedListRemovedItemBuilder] parameter.
-  Widget _buildRemovedItem(KuralWithIndex kural, BuildContext context, Animation<double> animation) {
+  Widget _buildRemovedItem(
+      KuralWithIndex kural, BuildContext context, Animation<double> animation) {
     return new CardItem(
       animation: animation,
       kuralWithIndex: kural,
@@ -97,11 +119,13 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
     if (_fetching) {
       return _getCentreProgress();
     }
-    return new AnimatedList(
-      key: _listKey,
-      initialItemCount: _list.length,
-      itemBuilder: _buildItem,
-    );
+    return new Container(
+        padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
+        child: new AnimatedList(
+          key: _listKey,
+          initialItemCount: _list.length,
+          itemBuilder: _buildItem,
+        ));
   }
 
   @override
@@ -124,7 +148,7 @@ class ListModel<E> {
     this.listKey,
     this.removedItemBuilder,
     Iterable<E> initialItems,
-  }) : assert(listKey != null),
+  })  : assert(listKey != null),
         assert(removedItemBuilder != null),
         _items = new List<E>.from(initialItems ?? <E>[]);
 
@@ -142,7 +166,8 @@ class ListModel<E> {
   E removeAt(int index) {
     final E removedItem = _items.removeAt(index);
     if (removedItem != null) {
-      _animatedList.removeItem(index, (BuildContext context, Animation<double> animation) {
+      _animatedList.removeItem(index,
+          (BuildContext context, Animation<double> animation) {
         return removedItemBuilder(removedItem, context, animation);
       });
     }
@@ -154,16 +179,27 @@ class ListModel<E> {
   int indexOf(E item) => _items.indexOf(item);
 }
 
-Widget _getListTile(Kural kural, VoidCallback onRemove) {
+Widget _getListTile(KuralWithIndex kuralWithIndex, VoidCallback onRemove, VoidCallback onFavTap) {
   return new Card(
     child: new Column(
       children: <Widget>[
         new ListTile(
-          title: new Text(
-            kural.tamil,
+          title: new Container(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: new Text(
+              kuralWithIndex.kural.tamil,
+              style: new TextStyle(
+                fontSize: 13.0,
+              ),
+            ),
           ),
-//          isThreeLine: true,
-//          subtitle: new Text("$kKural ${kuralIndex+1}"),
+          subtitle: new Container(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: new Text(
+              "$kKural ${kuralWithIndex.kuralIndex+1}",
+            ),
+          ),
+          onTap: onFavTap,
         ),
         new ButtonTheme.bar(
           // make buttons use the appropriate styles for cards
@@ -186,25 +222,26 @@ class CardItem extends StatelessWidget {
     Key key,
     this.animation,
     this.onFavRemove,
+    this.onFavTap,
     this.kuralWithIndex,
-  }) : assert(animation != null),
+  })  : assert(animation != null),
         assert(kuralWithIndex != null),
         super(key: key);
 
   final Animation<double> animation;
   final VoidCallback onFavRemove;
+  final VoidCallback onFavTap;
   final KuralWithIndex kuralWithIndex;
 
   @override
   Widget build(BuildContext context) {
     return new FadeTransition(
-      opacity: animation,
-      child: new SizeTransition(
-        axis: Axis.vertical,
-        sizeFactor: animation,
-        child: _getListTile(kuralWithIndex.kural, onFavRemove),
-      )
-    );
+        opacity: animation,
+        child: new SizeTransition(
+          axis: Axis.vertical,
+          sizeFactor: animation,
+          child: _getListTile(kuralWithIndex, onFavRemove, onFavTap),
+        ));
   }
 }
 
