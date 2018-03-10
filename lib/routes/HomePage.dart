@@ -107,6 +107,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   _onBottomBarTap(int index) {
+    _botBarBodyViews[_screen].controller.reset();
+    _botBarBodyViews[index].controller.forward();
     setState(() {
       _screen = index;
     });
@@ -124,8 +126,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (_fetching) {
       return _getCentreProgress();
     }
-    _botBarBodyViews[_screen].controller.reset();
-    _botBarBodyViews[_screen].controller.forward();
     return _botBarBodyViews[_screen].transition(context);
   }
 
