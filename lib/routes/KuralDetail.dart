@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:html_unescape/html_unescape.dart';
 import '../constants.dart';
 import '../kurals.dart';
 import '../utils.dart';
@@ -77,7 +76,6 @@ class _KuralDetailState extends State<KuralDetail> {
         softWrap: true,
         textAlign: TextAlign.left,
         style: new TextStyle(
-          color: Colors.black87,
           fontWeight: FontWeight.w700,
           fontSize: 13.0,
           height: 1.5,
@@ -93,7 +91,6 @@ class _KuralDetailState extends State<KuralDetail> {
         softWrap: true,
         textAlign: TextAlign.left,
         style: new TextStyle(
-          color: Colors.black87,
           fontWeight: FontWeight.w400,
           fontSize: 13.0,
           height: 1.5,
@@ -102,7 +99,7 @@ class _KuralDetailState extends State<KuralDetail> {
     );
 
     Widget subsection = new Container(
-      color: Colors.grey.shade200,
+      color: Theme.of(context).cardColor,
       padding: const EdgeInsets.symmetric(
         horizontal: 8.0,
         vertical: 8.0,
@@ -111,7 +108,7 @@ class _KuralDetailState extends State<KuralDetail> {
         child: new Text(
           "$athigaram, $paal",
           style: new TextStyle(
-            color: Colors.black87,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
