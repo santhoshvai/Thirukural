@@ -25,27 +25,24 @@ class KuralExpansionItem extends StatelessWidget {
   final int _paalIndex;
   final Kurals _kurals;
 
-  _onPress(BuildContext context, Kural kural) {
-    Athigaram athigaram = _kurals.athigaarams[kural.athigaramIndex];
-    String paal = _kurals.paals[athigaram.paalIndex];
-    bool isFav = false;
-    Navigator.of(context).push(new MaterialPageRoute<Null>(
-          builder: (BuildContext context) => new KuralDetail(
-                kural,
-                athigaram.name,
-                paal,
-                _kurals.kurals.indexOf(kural, kural.athigaramIndex),
-              ),
-        ));
-  }
-
   Widget _buildKuralListTile(BuildContext context, Kural kural) {
     return new ListTile(
-      onTap: () => _onPress(context, kural),
+      onTap: () {
+        Athigaram athigaram = _kurals.athigaarams[kural.athigaramIndex];
+        String paal = _kurals.paals[athigaram.paalIndex];
+        bool isFav = false;
+        Navigator.of(context).push(new MaterialPageRoute<Null>(
+          builder: (BuildContext context) => new KuralDetail(
+            kural,
+            athigaram.name,
+            paal,
+            _kurals.kurals.indexOf(kural, kural.athigaramIndex),
+          ),
+        ));
+      },
       title: new Text(
         kural.tamil,
         style: new TextStyle(
-          color: Colors.black87,
           fontSize: 11.0,
         ),
       ),
@@ -77,14 +74,16 @@ class KuralExpansionItem extends StatelessWidget {
   }
 
   Widget _buildPaalExpansionTiles(BuildContext context) {
-    return new ExpansionTile(
-      key: new PageStorageKey<String>(_kurals.paals[_paalIndex]),
-      title: new Text(_kurals.paals[_paalIndex]),
-      children: _kurals.athigaarams
-          .where((athigaaram) => athigaaram.paalIndex == _paalIndex)
-          .map((athigaaram) =>
-              _buildAthigaaramExpansionTiles(context, athigaaram))
-          .toList(),
+    return new Container(
+      child: new ExpansionTile(
+        key: new PageStorageKey<String>(_kurals.paals[_paalIndex]),
+        title: new Text(_kurals.paals[_paalIndex]),
+        children: _kurals.athigaarams
+            .where((athigaaram) => athigaaram.paalIndex == _paalIndex)
+            .map((athigaaram) =>
+            _buildAthigaaramExpansionTiles(context, athigaaram))
+            .toList(),
+      )
     );
   }
 
