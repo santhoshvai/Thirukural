@@ -163,18 +163,21 @@ class _KuralDetailState extends State<KuralDetail> {
       );
     }
 
+    String favoriteTooltip = "${_isFavorite? 'Remove' : 'Add'} ${_isFavorite? 'from' : 'to'} favorites";
+    Icon favIcon = new Icon(_isFavorite? Icons.star : Icons.star_border);
+
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("$kKural ${index+1}"),
         actions: <Widget>[
           new IconButton(
-            icon: new Icon(Icons.share),
+            icon: const Icon(Icons.share),
             tooltip: "Share kural ${index+1}",
             onPressed: _share,
           ),
           new IconButton(
-            icon: new Icon(_isFavorite? Icons.star : Icons.star_border),
-            tooltip: "${_isFavorite? 'Remove' : 'Add'} kural ${index+1} ${_isFavorite? 'from' : 'to'} favorites",
+            icon: favIcon,
+            tooltip: favoriteTooltip,
             onPressed: _favoriteToggle,
           ),
         ],
@@ -187,6 +190,13 @@ class _KuralDetailState extends State<KuralDetail> {
           _getCard(kVilakam, kural.tamilExplanation1),
           _getCard(kVilakam2, kural.tamilExplanation2),
           _getCard(kEnglishExplanation, kural.englishExplanation),
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              new RaisedButton.icon(onPressed: _share, icon: const Icon(Icons.share), label: const Text("Share")),
+              new RaisedButton.icon(onPressed: _favoriteToggle, icon: favIcon, label: new Text(favoriteTooltip)),
+            ],
+          ),
 //          _getCard(englishKural, kural.english),
         ],
       ),
