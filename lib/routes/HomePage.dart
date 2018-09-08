@@ -5,12 +5,12 @@ import '../kurals.dart';
 import '../constants.dart';
 import 'Sample.dart';
 
-class BotBarBodyView {
+class BottomBarBodyView {
   final Widget body;
   final AnimationController controller;
   CurvedAnimation _animation;
 
-  BotBarBodyView({Widget body, TickerProvider vsync}):
+  BottomBarBodyView({Widget body, TickerProvider vsync}):
         assert(body != null),
         assert(vsync != null),
         body = body,
@@ -46,7 +46,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _screen = 0;
   bool _fetching = true;
-  List<BotBarBodyView> _botBarBodyViews =  <BotBarBodyView>[];
+  List<BottomBarBodyView> _botBarBodyViews =  <BottomBarBodyView>[];
 
   _getKurals() async {
     String kuralJson = await DefaultAssetBundle
@@ -54,24 +54,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         .loadString('assets/kuralList.json');
     final kurals = new Kurals.fromJson(kuralJson);
 
-    final list = <BotBarBodyView>[
-      new BotBarBodyView(
+    final list = <BottomBarBodyView>[
+      new BottomBarBodyView(
         body: new KuralExpansion(kurals),
         vsync: this,
       ),
-      new BotBarBodyView(
+      new BottomBarBodyView(
         body: new FavoriteKurals(kurals),
         vsync: this,
       ),
       // TODO settings view
-      new BotBarBodyView(
+      new BottomBarBodyView(
         body: new AnimatedListSample(),
         vsync: this,
       )
     ];
 
     // initialise the animation controllers
-    for (BotBarBodyView view in _botBarBodyViews) {
+    for (BottomBarBodyView view in _botBarBodyViews) {
       view.controller.addListener(_rebuild);
     }
     list[_screen].controller.value = 1.0;
@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    for (BotBarBodyView view in _botBarBodyViews)
+    for (BottomBarBodyView view in _botBarBodyViews)
       view.controller.dispose();
     super.dispose();
   }
