@@ -77,7 +77,7 @@ class _KuralDetailState extends State<KuralDetail> {
   Widget build(BuildContext context) {
 
     Widget title = new Container(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 4.0),
       child: new Text(
         kural.tamil,
         overflow: TextOverflow.fade,
