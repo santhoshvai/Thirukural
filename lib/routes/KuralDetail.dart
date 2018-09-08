@@ -107,7 +107,7 @@ class _KuralDetailState extends State<KuralDetail> {
     );
 
     Widget subsection = new Container(
-      color: Theme.of(context).cardColor,
+      color: Theme.of(context).primaryColor.withAlpha(50),
       padding: const EdgeInsets.symmetric(
         horizontal: 8.0,
         vertical: 8.0,
@@ -128,20 +128,32 @@ class _KuralDetailState extends State<KuralDetail> {
       return new Card(
         child: new Container(
           padding: const EdgeInsets.symmetric(
-            horizontal: 8.0,
-            vertical: 8.0,
+            horizontal: 12.0,
+            vertical: 4.0,
           ),
           child: new Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              new Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
+              new Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 2.0,
+                  vertical: 2.0,
+                ),
+                child: new Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              new Text(
-                data,
+              new Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 2.0,
+                  vertical: 2.0,
+                ),
+                child: new Text(
+                  data,
+                ),
               ),
             ],
           ),
