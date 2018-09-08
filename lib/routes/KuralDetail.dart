@@ -21,14 +21,14 @@ class _KuralDetailState extends State<KuralDetail> {
   final String paal;
   final int index;
   bool _isFavorite = false;
-  Set<int> _allFavs = [].toSet();
+  Set<dynamic> _allFavs = [].toSet();
 
   _KuralDetailState(this.kural, this.athigaram, this.paal, this.index);
 
   _share() {
   }
 
-  _favoriteToggle() {
+  _favoriteToggle() async {
     if (!_isFavorite) {
       _allFavs.add(index);
     } else {
@@ -50,12 +50,20 @@ class _KuralDetailState extends State<KuralDetail> {
 
   _findIfFavorite() async {
     _allFavs = await readFavorites();
-    _isFavorite = _allFavs.contains(index);
+
+    // If the widget was removed from the tree while the message was in flight,
+    // we want to discard the reply rather than calling setState to update our
+    // non-existent appearance.
+
+    if (!mounted) return;
+    setState(() {
+      _isFavorite = _allFavs.contains(index);
+    });
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _findIfFavorite();
   }
 

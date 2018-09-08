@@ -19,17 +19,20 @@ Future<Set<int>> readFavorites() async {
     File file = new File(filename);
     // read the variable as a string from the file.
     String contents = await file.readAsString();
-    final List<int> list = JSON.decode(contents);
+    final List<dynamic> listJson = json.decode(contents);
+    // need to convert from dynamic to int
+    final list = <int>[];
+    listJson.forEach((element) => list.add(element));
     return list.toSet();
   } catch (e) {
-    _createNewFavsFile(filename, JSON.encode([]));
+    _createNewFavsFile(filename, json.encode([]));
     return new Set();
   }
 }
 
 writeFavoriteList(Set<int> sett) async {
   String dir = (await getApplicationDocumentsDirectory()).path;
-  var encodedString = JSON.encode(sett.toList());
+  var encodedString = json.encode(sett.toList());
   final String filename = '$dir/favs.json';
   try {
     File file = new File(filename);

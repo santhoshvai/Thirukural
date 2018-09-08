@@ -42,8 +42,8 @@ class ThirukuralApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: kHomepageTitle,
-      theme: darkTheme,
-//      theme: lightTheme,
+//      theme: darkTheme,
+      theme: lightTheme,
       home: new HomePage(),
     );
   }

@@ -14,8 +14,8 @@ class Kurals {
   // see
   // https://www.dartlang.org/resources/dart-tips/dart-tips-ep-11
   // http://blog.sethladd.com/2012/02/classes-in-dart-part-one.html
-  Kurals.fromJson(String json) {
-    Map data = JSON.decode(json);
+  Kurals.fromJson(String jsonStr) {
+    Map data = json.decode(jsonStr);
     List<String> pals = [];
     (data['pal'] as Map).forEach((k,v) {
       pals.add( v[0] );
@@ -26,7 +26,7 @@ class Kurals {
     });
     List<Kural> kurals = [];
     (data['kural'] as Map).forEach( (k,v) {
-      Map map = JSON.decode(v[3]);
+      Map map = json.decode(v[3]);
       kurals.add(
         new Kural(
             int.parse(v[1])-1,
