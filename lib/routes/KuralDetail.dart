@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 import '../constants.dart';
 import '../kurals.dart';
 import '../utils.dart';
@@ -26,6 +27,7 @@ class _KuralDetailState extends State<KuralDetail> {
   _KuralDetailState(this.kural, this.athigaram, this.paal, this.index);
 
   _share() {
+    Share.share(kural.getShareText());
   }
 
   _favoriteToggle() async {

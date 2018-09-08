@@ -4,7 +4,8 @@ description: Shows all kurals in Thirukural with their meanings. Supports both E
 dependencies:
   flutter:
     sdk: flutter
-  path_provider: "^0.4.1"
+  path_provider: ^0.4.1
+  share: ^0.5.3
 
 dev_dependencies:
   flutter_test:

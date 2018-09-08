@@ -1,4 +1,5 @@
 import 'dart:convert';
+import './constants.dart';
 
 class Kurals {
   List<String> paals;
@@ -74,5 +75,10 @@ class Kural {
   @override
   String toString() {
     return 'Kural{athigaramIndex: $athigaramIndex, tamil: $tamil, english: $english, tamilExplanation1: $tamilExplanation1, tamilExplanation2: $tamilExplanation2, englishExplanation: $englishExplanation, transliteration: $transliteration}';
+  }
+
+  // TODO - add app/play store link
+  String getShareText() {
+    return '$tamil\n\n$kVilakam $tamilExplanation1\n\n$kVilakam2 $tamilExplanation2\n\nExplanation: $englishExplanation\n\nSent from Thirukural App';
   }
 }
