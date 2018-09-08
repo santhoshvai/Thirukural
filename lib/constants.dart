@@ -13,3 +13,9 @@ const kBottombarMenu = const [
   const [Icons.star, "Favorites"],
   const [Icons.settings, "Settings"],
 ];
+
+const kAppBarTitles = const [
+  "All Kurals",
+  "Favorites",
+  "Settings",
+];

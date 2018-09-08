@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(
-          kHomepageTitle,
+          kAppBarTitles[_screen],
         ),
       ),
       body: _buildTransitionWidget(),
