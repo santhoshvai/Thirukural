@@ -83,7 +83,7 @@ class _KuralDetailState extends State<KuralDetail> {
         overflow: TextOverflow.fade,
         softWrap: true,
         textAlign: TextAlign.left,
-        style: new TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.w700,
           fontSize: 13.0,
           height: 1.5,
@@ -98,7 +98,7 @@ class _KuralDetailState extends State<KuralDetail> {
         overflow: TextOverflow.fade,
         softWrap: true,
         textAlign: TextAlign.left,
-        style: new TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.w400,
           fontSize: 13.0,
           height: 1.5,
@@ -115,7 +115,7 @@ class _KuralDetailState extends State<KuralDetail> {
       child: new Center(
         child: new Text(
           "$athigaram, $paal",
-          style: new TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -136,7 +136,7 @@ class _KuralDetailState extends State<KuralDetail> {
             children: <Widget>[
               new Text(
                 title,
-                style: new TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
