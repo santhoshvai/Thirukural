@@ -125,8 +125,6 @@ class _KuralDetailState extends State<KuralDetail> {
     );
 
     Widget _getCard(String title, String data) {
-      var unescape = new HtmlUnescape();
-      data = unescape.convert(data);
       return new Card(
         child: new Container(
           padding: const EdgeInsets.symmetric(

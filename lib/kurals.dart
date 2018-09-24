@@ -1,5 +1,6 @@
 import 'dart:convert';
 import './constants.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 class Kurals {
   List<String> paals;
@@ -18,6 +19,7 @@ class Kurals {
   Kurals.fromJson(String jsonStr) {
     Map data = json.decode(jsonStr);
     List<String> pals = [];
+    var unescape = new HtmlUnescape();
     (data['pal'] as Map).forEach((k,v) {
       pals.add( v[0] );
     });
@@ -32,11 +34,11 @@ class Kurals {
         new Kural(
             int.parse(v[1])-1,
             v[2],
-            map['e'],
-            map['v'],
-            map['s'],
-            map['c'],
-            map['t']
+            unescape.convert(map['e']),
+            unescape.convert(map['v']),
+            unescape.convert(map['s']),
+            unescape.convert(map['c']),
+            unescape.convert(map['t'])
         )
       );
     });
