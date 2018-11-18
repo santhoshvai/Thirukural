@@ -6,17 +6,17 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - Flutter (from `/Users/santhoshvai/projects/flutter/bin/cache/artifacts/engine/ios`)
-  - path_provider (from `/Users/santhoshvai/.pub-cache/hosted/pub.dartlang.org/path_provider-0.4.1/ios`)
-  - share (from `/Users/santhoshvai/.pub-cache/hosted/pub.dartlang.org/share-0.5.3/ios`)
+  - Flutter (from `/Users/santhoshvaiyapuri/Projects/flutter/bin/cache/artifacts/engine/ios`)
+  - path_provider (from `/Users/santhoshvaiyapuri/.pub-cache/hosted/pub.dartlang.org/path_provider-0.4.1/ios`)
+  - share (from `/Users/santhoshvaiyapuri/.pub-cache/hosted/pub.dartlang.org/share-0.5.3/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: "/Users/santhoshvai/projects/flutter/bin/cache/artifacts/engine/ios"
+    :path: "/Users/santhoshvaiyapuri/Projects/flutter/bin/cache/artifacts/engine/ios"
   path_provider:
-    :path: "/Users/santhoshvai/.pub-cache/hosted/pub.dartlang.org/path_provider-0.4.1/ios"
+    :path: "/Users/santhoshvaiyapuri/.pub-cache/hosted/pub.dartlang.org/path_provider-0.4.1/ios"
   share:
-    :path: "/Users/santhoshvai/.pub-cache/hosted/pub.dartlang.org/share-0.5.3/ios"
+    :path: "/Users/santhoshvaiyapuri/.pub-cache/hosted/pub.dartlang.org/share-0.5.3/ios"
 
 SPEC CHECKSUMS:
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
