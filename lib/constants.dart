@@ -11,7 +11,7 @@ const String kVilakam2 = "விளக்கம் 2:";
 const kBottombarMenu = const [
   const [Icons.view_list, "All"],
   const [Icons.star, "Favorites"],
-  const [Icons.settings, "Settings"],
+//  const [Icons.settings, "Settings"],
 ];
 
 const kAppBarTitles = const [

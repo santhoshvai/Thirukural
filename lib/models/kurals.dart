@@ -1,5 +1,5 @@
 import 'dart:convert';
-import './constants.dart';
+import '../constants.dart';
 import 'package:html_unescape/html_unescape.dart';
 
 class Kurals {
@@ -18,8 +18,8 @@ class Kurals {
   // http://blog.sethladd.com/2012/02/classes-in-dart-part-one.html
   Kurals.fromJson(String jsonStr) {
     Map data = json.decode(jsonStr);
-    List<String> pals = [];
     var unescape = new HtmlUnescape();
+    List<String> pals = [];
     (data['pal'] as Map).forEach((k,v) {
       pals.add( v[0] );
     });

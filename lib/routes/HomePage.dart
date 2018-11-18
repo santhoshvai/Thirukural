@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../BottomBarScreens/KuralExpansion.dart';
 import '../BottomBarScreens/FavoriteKurals.dart';
-import '../kurals.dart';
+import '../models/kurals.dart';
 import '../constants.dart';
-import 'Sample.dart';
+import '../bloc/KuralProvider.dart';
+import '../bloc/KuralBloc.dart';
 
 class BottomBarBodyView {
   final Widget body;
@@ -64,10 +65,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         vsync: this,
       ),
       // TODO settings view
-      new BottomBarBodyView(
-        body: new AnimatedListSample(),
-        vsync: this,
-      )
+//      new BottomBarBodyView(
+//        body: new AnimatedListSample(),
+//        vsync: this,
+//      )
     ];
 
     // initialise the animation controllers
@@ -115,22 +116,41 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _getCentreProgress() {
-    return new Center(
+    return Center(
       child: new CircularProgressIndicator(
         value: null,
       ),
     );
   }
 
-  Widget _buildTransitionWidget() {
-    if (_fetching) {
-      return _getCentreProgress();
-    }
+  Widget _buildTransitionWidget(KuralBloc kuralBloc) {
+    return StreamBuilder<bool>(
+      stream: kuralBloc.fetchingKurals,
+      initialData: true,
+      builder: (context, snapshot) => _getBody(context, snapshot)
+    );
+  }
+
+//    (context, snapshot) => {
+//    if (snapshot.data) {
+//    return _getCentreProgress();
+//    }
+//    return _botBarBodyViews[_screen].transition(context);
+//    })
+//  }
+
+  Widget _getBody(BuildContext context, AsyncSnapshot<bool> snapshot) {
+    if (snapshot.data) return _getCentreProgress();
     return _botBarBodyViews[_screen].transition(context);
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+    final kuralBloc = KuralProvider.of(context);
+    kuralBloc.fetchingKurals.listen(onData)
+
     final botNavBar = new BottomNavigationBar(
       items: kBottombarMenu
           .map((e) => new BottomNavigationBarItem(icon: new Icon(e[0]), title: new Text(e[1])))

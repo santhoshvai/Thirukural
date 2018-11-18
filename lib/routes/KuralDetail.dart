@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import '../constants.dart';
-import '../kurals.dart';
+import 'package:thirukural/models/kurals.dart';
 import '../utils.dart';
 
 class KuralDetail extends StatefulWidget {
@@ -13,28 +13,26 @@ class KuralDetail extends StatefulWidget {
   KuralDetail(this.kural, this.athigaram, this.paal, this.index);
 
   @override
-  _KuralDetailState createState() => new _KuralDetailState(kural, athigaram, paal, index);
+  _KuralDetailState createState() =>
+      new _KuralDetailState();
 }
 
 class _KuralDetailState extends State<KuralDetail> {
-  final Kural kural;
-  final String athigaram;
-  final String paal;
-  final int index;
   bool _isFavorite = false;
   Set<dynamic> _allFavs = [].toSet();
+  BuildContext _scaffoldContext;
 
-  _KuralDetailState(this.kural, this.athigaram, this.paal, this.index);
+  _KuralDetailState();
 
   _share() {
-    Share.share(kural.getShareText());
+    Share.share(widget.kural.getShareText());
   }
 
   _favoriteToggle() async {
     if (!_isFavorite) {
-      _allFavs.add(index);
+      _allFavs.add(widget.index);
     } else {
-      _allFavs.remove(index);
+      _allFavs.remove(widget.index);
     }
     writeFavoriteList(_allFavs);
 
@@ -43,8 +41,15 @@ class _KuralDetailState extends State<KuralDetail> {
     // non-existent appearance.
     if (!mounted) return;
 
+    bool wasFav = _isFavorite;
+    ScaffoldState scaffoldState = Scaffold.of(_scaffoldContext);
+    scaffoldState.removeCurrentSnackBar(reason: SnackBarClosedReason.remove);
+    String favoriteNotification =
+        "${wasFav ? 'Removed' : 'Added'} ${wasFav ? 'from' : 'to'} favorites";
+    scaffoldState.showSnackBar(SnackBar(content: Text(favoriteNotification)));
+
     setState(() {
-      _isFavorite = !_isFavorite;
+      _isFavorite = !wasFav;
     });
   }
 
@@ -59,7 +64,7 @@ class _KuralDetailState extends State<KuralDetail> {
 
     if (!mounted) return;
     setState(() {
-      _isFavorite = _allFavs.contains(index);
+      _isFavorite = _allFavs.contains(widget.index);
     });
   }
 
@@ -77,11 +82,10 @@ class _KuralDetailState extends State<KuralDetail> {
    */
   @override
   Widget build(BuildContext context) {
-
     Widget title = new Container(
       padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 4.0),
       child: new Text(
-        kural.tamil,
+        widget.kural.tamil,
         overflow: TextOverflow.fade,
         softWrap: true,
         textAlign: TextAlign.left,
@@ -96,7 +100,7 @@ class _KuralDetailState extends State<KuralDetail> {
     Widget subtitle = new Container(
       padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 8.0),
       child: new Text(
-        _capitalize(kural.transliteration.toLowerCase()),
+        _capitalize(widget.kural.transliteration.toLowerCase()),
         overflow: TextOverflow.fade,
         softWrap: true,
         textAlign: TextAlign.left,
@@ -116,7 +120,7 @@ class _KuralDetailState extends State<KuralDetail> {
       ),
       child: new Center(
         child: new Text(
-          "$athigaram, $paal",
+          "${widget.athigaram}, ${widget.paal}",
           style: const TextStyle(
             fontWeight: FontWeight.w700,
           ),
@@ -161,43 +165,49 @@ class _KuralDetailState extends State<KuralDetail> {
       );
     }
 
-    String favoriteTooltip = "${_isFavorite? 'Remove' : 'Add'} ${_isFavorite? 'from' : 'to'} favorites";
-    Icon favIcon = new Icon(_isFavorite? Icons.star : Icons.star_border);
+    String favoriteTooltip =
+        "${_isFavorite ? 'Remove' : 'Add'} ${_isFavorite ? 'from' : 'to'} favorites";
+    Icon favIcon = new Icon(_isFavorite ? Icons.star : Icons.star_border);
+    
+    Widget buttonContainer = SafeArea(
+          child: Container(
+              color: Colors.deepPurple[50],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  FlatButton.icon(
+                      onPressed: _share,
+                      textColor: Colors.deepPurple[500],
+                      icon: Icon(Icons.share),
+                      label: Text("Share")),
+                  FlatButton.icon(
+                      onPressed: _favoriteToggle,
+                      icon: favIcon,
+                      textColor: Colors.deepPurple[500],
+                      label: Text(favoriteTooltip)),
+                ],
+              )));
 
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("$kKural ${index+1}"),
-        actions: <Widget>[
-          new IconButton(
-            icon: const Icon(Icons.share),
-            tooltip: "Share kural ${index+1}",
-            onPressed: _share,
-          ),
-          new IconButton(
-            icon: favIcon,
-            tooltip: favoriteTooltip,
-            onPressed: _favoriteToggle,
-          ),
-        ],
-      ),
-      body: new ListView(
-        children: <Widget>[
-          title,
-          subtitle,
-          subsection,
-          _getCard(kVilakam, kural.tamilExplanation1),
-          _getCard(kVilakam2, kural.tamilExplanation2),
-          _getCard(kEnglishExplanation, kural.englishExplanation),
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              new RaisedButton.icon(onPressed: _share, icon: const Icon(Icons.share), label: const Text("Share")),
-              new RaisedButton.icon(onPressed: _favoriteToggle, icon: favIcon, label: new Text(favoriteTooltip)),
-            ],
-          ),
-//          _getCard(englishKural, kural.english),
-        ],
-      ),
+    Widget body = ListView(
+      children: <Widget>[
+        title,
+        subtitle,
+        subsection,
+        _getCard(kVilakam, widget.kural.tamilExplanation1),
+        _getCard(kVilakam2, widget.kural.tamilExplanation2),
+        _getCard(kEnglishExplanation, widget.kural.englishExplanation),
+      ],
     );
+      return Scaffold(
+        appBar: new AppBar(
+          title: new Text("$kKural ${widget.index + 1}"),
+        ),
+        body: Builder(builder: (BuildContext context) {
+          _scaffoldContext = context;
+          return body;
+        }),
+        bottomNavigationBar: buttonContainer,
+      );
   }
 }

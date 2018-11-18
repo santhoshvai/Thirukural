@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../kurals.dart';
+import 'package:thirukural/models/kurals.dart';
 import '../routes/KuralDetail.dart';
 
 class KuralExpansion extends StatelessWidget {

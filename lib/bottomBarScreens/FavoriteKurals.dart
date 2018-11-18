@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../routes/KuralDetail.dart';
 import '../constants.dart';
-import '../kurals.dart';
+import '../models/kurals.dart';
 import '../utils.dart';
 
 class FavoriteKurals extends StatefulWidget {

@@ -1,15 +1,41 @@
 import 'package:flutter/material.dart';
 import './routes/HomePage.dart';
 import 'constants.dart';
+import 'colors.dart';
+import './bloc/KuralProvider.dart';
+import './bloc/KuralBloc.dart';
 
 void main() {
   runApp(new ThirukuralApp());
+}
+
+final ThemeData _kShrineTheme = _buildShrineTheme();
+
+ThemeData _buildShrineTheme() {
+  final ThemeData base = ThemeData(
+    brightness: Brightness.light,
+    fontFamily: 'NotoSansTamil',
+  );
+  return base.copyWith(
+    accentColor: Colors.deepPurpleAccent,
+//    accentColor: kShrineBrown900,
+    primaryColor: Colors.deepPurple[700],
+    buttonColor: kShrinePink100,
+    scaffoldBackgroundColor: kShrineBackgroundWhite,
+    cardColor: kShrineBackgroundWhite,
+    textSelectionColor: kShrinePink100,
+    errorColor: kShrineErrorRed,
+    // TODO: Add the text themes (103)
+    // TODO: Add the icon themes (103)
+    // TODO: Decorate the inputs (103)
+  );
 }
 
 final lightTheme = new ThemeData(
   primarySwatch: Colors.deepPurple,
   accentColor: Colors.deepPurpleAccent,
   fontFamily: 'NotoSansTamil',
+  buttonColor: Colors.deepPurple[300]
 );
 
 // https://www.uplabs.com/posts/dark-material-ui-design
@@ -40,11 +66,14 @@ final darkTheme = new ThemeData(
 class ThirukuralApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: kHomepageTitle,
+    return KuralProvider(
+      kuralBloc: KuralBloc(context),
+      child: new MaterialApp(
+        title: kHomepageTitle,
 //      theme: darkTheme,
-      theme: lightTheme,
-      home: new HomePage(),
+        theme: _kShrineTheme,
+        home: new HomePage(),
+      ),
     );
   }
 }
