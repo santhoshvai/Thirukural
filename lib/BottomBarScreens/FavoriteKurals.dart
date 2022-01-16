@@ -202,6 +202,7 @@ Widget _getListTile(KuralWithIndex kuralWithIndex, VoidCallback onRemove, VoidCa
           onTap: onFavTap,
         ),
         new ButtonBarTheme(
+          data: ButtonBarThemeData(),
           // make buttons use the appropriate styles for cards
           child: new ButtonBar(
             children: <Widget>[
