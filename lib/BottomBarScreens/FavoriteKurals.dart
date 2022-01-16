@@ -201,11 +201,11 @@ Widget _getListTile(KuralWithIndex kuralWithIndex, VoidCallback onRemove, VoidCa
           ),
           onTap: onFavTap,
         ),
-        new ButtonTheme.bar(
+        new ButtonBarTheme(
           // make buttons use the appropriate styles for cards
           child: new ButtonBar(
             children: <Widget>[
-              new FlatButton(
+              new TextButton(
                 child: const Text('REMOVE'),
                 onPressed: onRemove,
               ),
