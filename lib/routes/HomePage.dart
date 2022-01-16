@@ -8,9 +8,9 @@ import 'Sample.dart';
 class BottomBarBodyView {
   final Widget body;
   final AnimationController controller;
-  CurvedAnimation _animation;
+  late CurvedAnimation _animation;
 
-  BottomBarBodyView({Widget body, TickerProvider vsync}):
+  BottomBarBodyView({required Widget body, required TickerProvider vsync}):
         assert(body != null),
         assert(vsync != null),
         body = body,
@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final botNavBar = new BottomNavigationBar(
       items: kBottombarMenu
-          .map((e) => new BottomNavigationBarItem(icon: new Icon(e[0]), title: new Text(e[1])))
+          .map((e) => new BottomNavigationBarItem(icon: new Icon(e[0] as IconData?), title: new Text(e[1] as String)))
           .toList(),
       currentIndex: _screen,
       onTap: _onBottomBarTap,

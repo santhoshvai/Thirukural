@@ -29,7 +29,7 @@ class KuralExpansionItem extends StatelessWidget {
     return new ListTile(
       onTap: () {
         Athigaram athigaram = _kurals.athigaarams[kural.athigaramIndex];
-        String paal = _kurals.paals[athigaram.paalIndex];
+        String? paal = _kurals.paals[athigaram.paalIndex];
         bool isFav = false;
         Navigator.of(context).push(new MaterialPageRoute<Null>(
           builder: (BuildContext context) => new KuralDetail(
@@ -41,7 +41,7 @@ class KuralExpansionItem extends StatelessWidget {
         ));
       },
       title: new Text(
-        kural.tamil,
+        kural.tamil!,
         style: new TextStyle(
           fontSize: 11.0,
         ),
@@ -53,9 +53,9 @@ class KuralExpansionItem extends StatelessWidget {
   Widget _buildAthigaaramExpansionTiles(
       BuildContext context, Athigaram athigaram) {
     return new ExpansionTile(
-      key: new PageStorageKey<String>(athigaram.name),
+      key: new PageStorageKey<String?>(athigaram.name),
       title: new Text(
-        athigaram.name,
+        athigaram.name!,
         style: new TextStyle(
           fontSize: 13.0,
         ),
@@ -76,8 +76,8 @@ class KuralExpansionItem extends StatelessWidget {
   Widget _buildPaalExpansionTiles(BuildContext context) {
     return new Container(
       child: new ExpansionTile(
-        key: new PageStorageKey<String>(_kurals.paals[_paalIndex]),
-        title: new Text(_kurals.paals[_paalIndex]),
+        key: new PageStorageKey<String?>(_kurals.paals[_paalIndex]),
+        title: new Text(_kurals.paals[_paalIndex]!),
         children: _kurals.athigaarams
             .where((athigaaram) => athigaaram.paalIndex == _paalIndex)
             .map((athigaaram) =>

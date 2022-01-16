@@ -6,8 +6,8 @@ import '../utils.dart';
 
 class KuralDetail extends StatefulWidget {
   final Kural kural;
-  final String athigaram;
-  final String paal;
+  final String? athigaram;
+  final String? paal;
   final int index;
 
   KuralDetail(this.kural, this.athigaram, this.paal, this.index);
@@ -18,8 +18,8 @@ class KuralDetail extends StatefulWidget {
 
 class _KuralDetailState extends State<KuralDetail> {
   final Kural kural;
-  final String athigaram;
-  final String paal;
+  final String? athigaram;
+  final String? paal;
   final int index;
   bool _isFavorite = false;
   Set<dynamic> _allFavs = [].toSet();
@@ -36,7 +36,7 @@ class _KuralDetailState extends State<KuralDetail> {
     } else {
       _allFavs.remove(index);
     }
-    writeFavoriteList(_allFavs);
+    writeFavoriteList(_allFavs as Set<int>);
 
     // If the widget was removed from the tree while the message was in flight,
     // we want to discard the reply rather than calling setState to update our
@@ -81,7 +81,7 @@ class _KuralDetailState extends State<KuralDetail> {
     Widget title = new Container(
       padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 4.0),
       child: new Text(
-        kural.tamil,
+        kural.tamil!,
         overflow: TextOverflow.fade,
         softWrap: true,
         textAlign: TextAlign.left,

@@ -3,9 +3,9 @@ import './constants.dart';
 import 'package:html_unescape/html_unescape.dart';
 
 class Kurals {
-  List<String> paals;
-  List<Athigaram> athigaarams;
-  List<Kural> kurals;
+  late List<String?> paals;
+  late List<Athigaram> athigaarams;
+  late List<Kural> kurals;
 
   Kurals() {
     paals = [];
@@ -18,7 +18,7 @@ class Kurals {
   // http://blog.sethladd.com/2012/02/classes-in-dart-part-one.html
   Kurals.fromJson(String jsonStr) {
     Map data = json.decode(jsonStr);
-    List<String> pals = [];
+    List<String?> pals = [];
     var unescape = new HtmlUnescape();
     (data['pal'] as Map).forEach((k,v) {
       pals.add( v[0] );
@@ -51,7 +51,7 @@ class Kurals {
 
 class Athigaram {
   final int paalIndex;
-  final String name;
+  final String? name;
 
   Athigaram(this.paalIndex, this.name);
 
@@ -63,7 +63,7 @@ class Athigaram {
 
 class Kural {
   final int athigaramIndex;
-  final String tamil;
+  final String? tamil;
   final String english;
   final String tamilExplanation1;
   final String tamilExplanation2;

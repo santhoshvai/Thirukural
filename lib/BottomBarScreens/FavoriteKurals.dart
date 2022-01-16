@@ -17,8 +17,8 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
   final Kurals _kurals;
   bool _fetching = true;
   List<int> _allFavsIndices = [];
-  KuralWithIndex _deletedKural;
-  ListModel<KuralWithIndex> _list;
+  KuralWithIndex? _deletedKural;
+  late ListModel<KuralWithIndex?> _list;
   final GlobalKey<AnimatedListState> _listKey =
       new GlobalKey<AnimatedListState>();
 
@@ -42,7 +42,7 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
 
     setState(() {
       _fetching = false;
-      _list = new ListModel<KuralWithIndex>(
+      _list = new ListModel<KuralWithIndex?>(
         listKey: _listKey,
         initialItems: favKurals,
         removedItemBuilder: _buildRemovedItem,
@@ -51,7 +51,7 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
   }
 
   _removeFromFavs() async {
-    _allFavsIndices.remove(_deletedKural.kuralIndex);
+    _allFavsIndices.remove(_deletedKural!.kuralIndex);
     writeFavoriteList(_allFavsIndices.toSet());
   }
 
@@ -73,7 +73,7 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
   // Used to build list items that haven't been removed.
   Widget _buildItem(
       BuildContext context, int index, Animation<double> animation) {
-    final kuralWithIndex = _list[index];
+    final kuralWithIndex = _list[index]!;
     final kural = kuralWithIndex.kural;
     return new CardItem(
         animation: animation,
@@ -81,7 +81,7 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
         onFavTap: () async {
           // move to detail page
           Athigaram athigaram = _kurals.athigaarams[kural.athigaramIndex];
-          String paal = _kurals.paals[athigaram.paalIndex];
+          String? paal = _kurals.paals[athigaram.paalIndex];
           await Navigator.of(context).push(new MaterialPageRoute<Null>(
             builder: (BuildContext context) => new KuralDetail(
               kural,
@@ -145,9 +145,9 @@ class _FavoriteKuralsState extends State<FavoriteKurals> {
 /// [AnimatedListState.insertItem] and [AnimatedList.removeItem].
 class ListModel<E> {
   ListModel({
-    this.listKey,
-    this.removedItemBuilder,
-    Iterable<E> initialItems,
+    required this.listKey,
+    required this.removedItemBuilder,
+    Iterable<E>? initialItems,
   })  : assert(listKey != null),
         assert(removedItemBuilder != null),
         _items = new List<E>.from(initialItems ?? <E>[]);
@@ -156,17 +156,17 @@ class ListModel<E> {
   final dynamic removedItemBuilder;
   final List<E> _items;
 
-  AnimatedListState get _animatedList => listKey.currentState;
+  AnimatedListState? get _animatedList => listKey.currentState;
 
   void insert(int index, E item) {
     _items.insert(index, item);
-    _animatedList.insertItem(index);
+    _animatedList!.insertItem(index);
   }
 
   E removeAt(int index) {
     final E removedItem = _items.removeAt(index);
     if (removedItem != null) {
-      _animatedList.removeItem(index,
+      _animatedList!.removeItem(index,
           (BuildContext context, Animation<double> animation) {
         return removedItemBuilder(removedItem, context, animation);
       });
@@ -179,7 +179,7 @@ class ListModel<E> {
   int indexOf(E item) => _items.indexOf(item);
 }
 
-Widget _getListTile(KuralWithIndex kuralWithIndex, VoidCallback onRemove, VoidCallback onFavTap) {
+Widget _getListTile(KuralWithIndex kuralWithIndex, VoidCallback? onRemove, VoidCallback? onFavTap) {
   return new Card(
     child: new Column(
       children: <Widget>[
@@ -187,7 +187,7 @@ Widget _getListTile(KuralWithIndex kuralWithIndex, VoidCallback onRemove, VoidCa
           title: new Container(
             padding: const EdgeInsets.only(top: 8.0),
             child: new Text(
-              kuralWithIndex.kural.tamil,
+              kuralWithIndex.kural.tamil!,
               style: new TextStyle(
                 fontSize: 13.0,
               ),
@@ -220,18 +220,18 @@ Widget _getListTile(KuralWithIndex kuralWithIndex, VoidCallback onRemove, VoidCa
 
 class CardItem extends StatelessWidget {
   const CardItem({
-    Key key,
-    this.animation,
+    Key? key,
+    required this.animation,
     this.onFavRemove,
     this.onFavTap,
-    this.kuralWithIndex,
+    required this.kuralWithIndex,
   })  : assert(animation != null),
         assert(kuralWithIndex != null),
         super(key: key);
 
   final Animation<double> animation;
-  final VoidCallback onFavRemove;
-  final VoidCallback onFavTap;
+  final VoidCallback? onFavRemove;
+  final VoidCallback? onFavTap;
   final KuralWithIndex kuralWithIndex;
 
   @override
